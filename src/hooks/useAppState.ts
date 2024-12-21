@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, ref, shallowRef } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import { Doc, Map as YMap } from "yjs";
 import { WebrtcProvider } from "y-webrtc";
 import { IndexeddbPersistence } from "y-indexeddb";
