@@ -69,6 +69,7 @@ export const useAppState = () => {
       }
       boxes.push([
         new YMap([
+          ["id" as const, crypto.randomUUID()],
           ["position" as const, position],
           ["size" as const, { width: 100, height: 100 }],
           ["color" as const, getRandomRPColorName()],

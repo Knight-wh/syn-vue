@@ -16,7 +16,11 @@ const emit = defineEmits<{
   onBoxDoubleClick: [index: number];
 }>();
 
-const handlePointerDown = (pos: Position, index: number, type: 'move' | 'resize') => {
+const handlePointerDown = (
+  pos: Position,
+  index: number,
+  type: "move" | "resize"
+) => {
   emit("onBoxPointerDown", { type: type, index: index, position: pos });
 };
 </script>
@@ -42,6 +46,7 @@ const handlePointerDown = (pos: Position, index: number, type: 'move' | 'resize'
   >
     <Box
       v-for="(box, index) in props.boxes"
+      :key="box.get('id')"
       :box="box"
       :index="index"
       :drag-state="props.dragState"
