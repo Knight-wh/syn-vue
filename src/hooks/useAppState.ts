@@ -2,6 +2,7 @@ import { onMounted, onUnmounted, ref, shallowRef } from "vue";
 import { Doc, Map as YMap } from "yjs";
 import { WebrtcProvider } from "y-webrtc";
 import { IndexeddbPersistence } from "y-indexeddb";
+import { useSyncArray } from "./useSync";
 import { DraggingBoxPosition, LocalUser, Position, RemoteUser } from "../type";
 import { getRandomRPColorName } from "../color";
 
@@ -15,16 +16,7 @@ export const useAppState = () => {
   const boxes = doc.getArray<YMap<any>>("boxes");
   const draggingBoxPosition = ref<null | DraggingBoxPosition>(null);
 
-  const boxesState = shallowRef<YMap<any>[]>(boxes.toArray());
-  const handler = () => {
-    boxesState.value = boxes.toArray();
-  };
-  onMounted(() => {
-    boxes.observe(handler);
-  });
-  onUnmounted(() => {
-    boxes.unobserve(handler);
-  });
+  const boxesState = useSyncArray(boxes);
 
   return {
     localUser,

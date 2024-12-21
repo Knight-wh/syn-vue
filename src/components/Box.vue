@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { Map as YMap, YMapEvent } from "yjs";
+import { Map as YMap } from "yjs";
 import { Position, DrawableBox } from "../type";
 import { getRPColorFromName } from "../color";
-import { onMounted, onUnmounted, ref } from "vue";
+import { ref } from "vue";
+import { useSyncMap2 } from "../hooks/useSync";
 const props = defineProps<{
   box: YMap<any>;
   index: number;
@@ -14,34 +15,22 @@ const emit = defineEmits<{
 }>();
 
 const resizeRef = ref<HTMLDivElement>();
-const boxMap = ref<DrawableBox>({
-  size: props.box.get("size"),
-  position: props.box.get("position"),
-  color: props.box.get("color"),
-});
-const handler = ({ changes }: YMapEvent<any>) => {
-  // @ts-ignore
-  changes.keys.forEach((change, key) => {
-    // @ts-ignore
-    boxMap.value[key] = props.box.get(key);
-  });
-};
-onMounted(() => {
-  props.box.observe(handler);
-});
-onUnmounted(() => {
-  props.box.unobserve(handler);
-});
+
+const boxMap = useSyncMap2<DrawableBox>(props.box, [
+  "size",
+  "position",
+  "color",
+]);
 </script>
 
 <template>
   <div
     class="absolute flex items-end justify-end rounded top-0 left-0 border border-base"
     :style="{
-      width: `${boxMap.size.width}px`,
-      height: `${boxMap.size.height}px`,
-      backgroundColor: getRPColorFromName(boxMap.color),
-      transform: `translate(${boxMap.position.left}px, ${boxMap.position.top}px)`,
+      width: `${boxMap.size.value.width}px`,
+      height: `${boxMap.size.value.height}px`,
+      backgroundColor: getRPColorFromName(boxMap.color.value),
+      transform: `translate(${boxMap.position.value.left}px, ${boxMap.position.value.top}px)`,
       cursor:
         props.dragState === 'dragging'
           ? 'grabbing'
